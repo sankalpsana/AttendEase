@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+<!DOCTYPE html>
+<html>
+
+{% block body %}
+    <h1>Live Streaming</h1>
+<div>
+
+    <form action={{ url_for('capture') }}>
+        <input type="submit" value="Add student">
+    </form>
+
+</div>
+
+<div>
+
+    <form id="attendanceForm">
+        <label for="date">Date:</label>
+        <input type="date" id="date" name="date" required><br><br>
+
+        <label for="subject">Subject:</label>
+        <select id="subject" name="subject" required>
+            <option value="">Select Subject</option>
+            <option value="sub1">Math</option>
+            <option value="sub2">Science</option>
+            <option value="sub3">English</option>
+        </select><br><br>
+
+        <button type="button" onclick="startStream()">Start Stream</button>
+    </form>
+
+    <!-- Video stream display -->
+    <h2>Live Video Stream:</h2>
+    <img id="videoStream" src="" width="640" height="480" style="display: none;">
+</div>
+
+
+
+
+<script>
+        function startStream() {
+            // Get the date and subject values
+            const date = document.getElementById('date').value;
+            const subject = document.getElementById('subject').value;
+
+            // Check if both fields are filled
+            if (!date || !subject) {
+                alert('Please fill in both the date and the subject.');
+                return;
+            }
+
+            // Construct the video feed URL with the date and subject
+            const videoFeedUrl = `/video_feed/${date}/${subject}`;
+
+            // Set the video feed URL to the img element and display it
+            const videoStream = document.getElementById('videoStream');
+            videoStream.src = videoFeedUrl;
+            videoStream.style.display = 'block';
+        }
+    </script>
+
+{% endblock %}
+
+</html>

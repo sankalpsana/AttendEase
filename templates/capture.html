@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+{% block body %}
+
+<!-- Input for Student ID -->
+<form id="student-form">
+    <label for="student_id">Student ID:</label>
+    <input type="text" id="student_id" name="student_id" required>
+</form>
+
+<!-- Video stream for webcam -->
+<video id="video" width="640" height="480" autoplay> </video>
+<button id="snap">Snap Photo</button>
+
+<!-- Display captured photo -->
+<canvas id="canvas" width="640" height="480"></canvas>
+<br>
+<button id="submit">Submit Photo and ID</button>
+
+
+
+<script>
+    // Access the webcam
+    var video = document.getElementById('video');
+    document.write("hrllo");
+    navigator.mediaDevices.getUserMedia({ video: true })
+        .then(function(stream) {
+
+            video.srcObject = stream;
+        })
+        .catch(function(err) {
+            console.log("An error occurred: " + err);
+        });
+
+    // Capture the photo
+    var canvas = document.getElementById('canvas');
+    var context = canvas.getContext('2d');
+    document.getElementById("snap").addEventListener("click", function() {
+        context.drawImage(video, 0, 0, 640, 480);
+    });
+
+    // Send photo and student ID to the server
+    document.getElementById("submit").addEventListener("click", function() {
+        // Get the student ID from the form
+        var studentId = document.getElementById("student_id").value;
+
+        // Get the image data from the canvas
+        var imageData = canvas.toDataURL("image/jpeg");
+
+        // Prepare the data to send
+        var data = {
+            student_id: studentId,
+            image: imageData
+        };
+
+        // Send the data to the server
+        fetch("/upload", {
+            method: "POST",
+            body: JSON.stringify(data),
+            headers: {
+                "Content-Type": "application/json"
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log("Response from server:", data);
+            alert(data.message);
+        })
+        .catch(error => console.log("Error:", error));
+    });
+</script>
+{% endblock %}
+
+
+</html>
