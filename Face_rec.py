@@ -80,7 +80,7 @@ def recProcess(date, subject):
 
                     if id not in presentToday:
                         presentToday.append(id)
-                        mark_attendance(id, date, 'present', file_path, subject)
+                        mark_attendance(id, 'present', date, subject)
                     else:
                         modeType = 3
                         counter = 0

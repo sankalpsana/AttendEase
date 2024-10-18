@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "micro-weaver-296313",
+  "private_key_id": "c930361663f9d5d4c9ff05cf4e69da7181c693ab",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDZjZozfcswua3w\nwXCWd16ZUvDwwDlTtGETsislITnfAhBQnDyb7euhxcdWYNOjo2MUsMld7c77ARGi\nFkm5xCLXglLehrI5cF51nRs89BekQqN1DtDOf3ub4Fa+0YbNE5vlQHRRNrq7PV1u\nSqI+q7avVsr2Ru7UD3pmh6sfz9xGZUAFEbFNrz7dNK6i8lUcwEtOyqKulre5+XJp\nVLplf3zGi4MsX/I9N930sBNeevbXwIR62Il0pG/02PMivJ7MReWEcWRD5dBi9q9h\nloHeAaSKecgpJ4ZtMdeyYDF9JlQ9yNrW20Nl/mV0DHRNaXiYBaaLQIAhCmSz/GX8\n5hwl+ksxAgMBAAECggEABqu78wjgHXOPGukakEGTJvNLMC2rwFZhTOjfX+9GspDy\nEj+1L9CWA2cQsYRM7wlKNyrj1M+PQ4T1DwXdDz89dINickB59+8LNXLqoDYJoMu6\njoMEmfVgo18n18ht2E1Z8BfXrTsW8xl6y0BKfO6X3qTkGrTCe2IJXjoaICLH+chP\n4KBUkG/7Z4lOcYY95OLYb/or9YP68M6/0zbeIvYf+W/UMKI8/DAZOQfAdV/vfQL0\nGcJ5pzVT+yI9CEAsRxkMN7Qq1voD/aUFuOEvsmrbMJopi+NNAtI5ZI7X6CXlxq8g\nzXpj5nMPHT3gXuQmM50tlD8ODeRlgE0iBUlOdK5vgQKBgQD+Ut90h7a0KulRJXsm\n3I5D9y2vpDmg85gasIXQuSz5EM8ayfqDJhuWQNJPuWcoEXgK7ZOJ5xNyY5oj3XQL\nDcDnJLpgShlhfMQmh64HzTZ69x4fQ4YM6/tNmqjUYMyKEV/QzNss8yCD3TnFUJEi\niRjEHjc+DV1TGdHyC0Ah0z0CgQKBgQDa/K98dWPlkEtBnPB5pFV/aCj1yZG3ByJi\n/h/JAtvuAHW6vUhp2k96jhL/x/bR4OQuE9EHJCcczIac897Y1dCBFbEJ3X0KfJ7Z\niLM5woFPTfb6ZZs+z0wvPi6fPFW5D5OQygiTHwJGaZ/Q/aeW3+zqZcIAFk9MerkW\n94GoD+OQsQKBgQDf7kZ0y55yqyn+2jrCcAcQDw96DOb1MidmsLFSpAnWUBebZeaf\nHanCtda4fe43mJITRTbYgM9dtBefprkrlnOY0n0MlZIdhYcMygDRO77RrM8oBgN9\nUzdWEGzBe239z+iG6CnAPV8O3HampxbzyrU00cogaBIZPq3eKkvQvLeGgQKBgCfF\n4x2IuKcWKQT2uxpsxXaJdX8GqCeE7TLrktxQX59/h+JtxHwtQWgx67N3HxYJcYgI\n41sXrt7lKsHQ7TWWx/LZ/Lic+Lvx3GwIDv07nX7I20WpNKQYxG6ELbWQIMWm1Zdj\nimEmLaSaRIORvmGBtCbyamTXqHlshLduJqdek2dRAoGAAXcSvGmpqDcGesQgz8yD\na0MRY+dsowvw5hNF2OhKWEeReuOmCpN0Dj3cxf8fToNWq3JHT6tt9LIXHwNSk4dX\nnJx2S0gAQsd5/l+dgM6IoAjA4dkDbwxKsIXD3x5qWPuXpzZZ+damS9LHcj0jaodg\nzeBXjO1nf8otdmRZfkMk2dg=\n-----END PRIVATE KEY-----\n",
+  "client_email": "attendencesheet@micro-weaver-296313.iam.gserviceaccount.com",
+  "client_id": "106690943455853559071",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/attendencesheet%40micro-weaver-296313.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}

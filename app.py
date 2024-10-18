@@ -8,7 +8,7 @@ from flask import Flask, render_template, Response, request,redirect,url_for,jso
 import cv2
 import face_recognition
 from Face_rec import recProcess
-from EncodeGenerator import encodeFace
+from EncodeGenerator import add_face_encoding
 from attendanceTool import add_student_to_all_sheets
 
 face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
@@ -100,8 +100,9 @@ def upload_file():
         cropped_image_path = os.path.join('Faces', crop_file_name)
         cv2.imwrite(cropped_image_path, face_image)
         os.remove(image_filename)
-        encodeFace()
-        add_student_to_all_sheets(student_id, 'attendance.xlsx')
+
+        add_face_encoding(cropped_image_path,student_id)
+
         print("Image uploaded successfully!")
 
         # Redirect to the index page
@@ -115,4 +116,4 @@ def video_feed(date, subject):
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, port=5000, host='0.0.0.0')
