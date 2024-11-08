@@ -3,7 +3,7 @@ from google.oauth2 import service_account
 from googleapiclient.discovery import build
 
 # Set up the service account credentials
-SERVICE_ACCOUNT_FILE = 'micro-weaver-296313-c930361663f9.json'  # Path to your service account JSON file
+SERVICE_ACCOUNT_FILE = '.venv/Keys/micro-weaver-296313-c930361663f9.json'  # Path to your service account JSON file
 SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
 
 # Create credentials
