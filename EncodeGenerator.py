@@ -1,43 +1,3 @@
-'''import cv2
-import face_recognition
-import pickle
-import os
-
-
-def encodeFace():
-    # Importing student images
-    folderPath = 'Faces'
-    pathList = os.listdir(folderPath)
-    # print(pathList)
-    imgList = []
-    studentIds = []
-    for path in pathList:
-        imgList.append(cv2.imread(os.path.join(folderPath, path)))
-        studentIds.append(os.path.splitext(path)[0])
-        fileName = f'{folderPath}/{path}'
-        # print(path)
-        # print(os.path.splitext(path)[0])
-
-    # print(studentIds)
-
-    def findEncodings(imagesList):
-        encodeList = []
-        for img in imagesList:
-            img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-            encode = face_recognition.face_encodings(img)[0]
-            encodeList.append(encode)
-
-        return encodeList
-
-    print("Encoding Started ...")
-    encodeListKnown = findEncodings(imgList)
-    encodeListKnownWithIds = [encodeListKnown, studentIds]
-    print("Encoding Complete")
-
-    file = open("EncodeFile.p", 'wb')
-    pickle.dump(encodeListKnownWithIds, file)
-    file.close()
-    print("File Saved")'''
 import cv2
 import face_recognition
 import pickle
@@ -93,4 +53,24 @@ def add_face_encoding(imagePath, studentId):
     add_student_to_all_sheets(studentId)
     print(f"Face encoding for Student ID {studentId} added successfully.")
 
+def delete_face_encoding(studentId):
+    # Load existing encodings and IDs
+    encodeListKnown, studentIdsKnown = load_encodings()
+
+    # Check if student ID exists
+    if studentId not in studentIdsKnown:
+        print(f"Student ID {studentId} does not exist in the encoding file.")
+        return
+
+    # Find the index of the student ID and remove the encoding and ID
+    index = studentIdsKnown.index(studentId)
+    del encodeListKnown[index]
+    del studentIdsKnown[index]
+
+    # Save the updated encodings and IDs back to the file
+    encodeListKnownWithIds = [encodeListKnown, studentIdsKnown]
+    with open("EncodeFile.p", 'wb') as file:
+        pickle.dump(encodeListKnownWithIds, file)
+
+    print(f"Face encoding for Student ID {studentId} deleted successfully.")
 

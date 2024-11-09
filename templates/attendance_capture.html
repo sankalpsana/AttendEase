@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attendance Capture</title>
+    <style>
+        body {
+            display: flex;
+            align-items: flex-start;
+        }
+        #videoContainer {
+            width: 640px;
+            height: 480px;
+            position: relative;
+        }
+        video {
+            width: 100%;
+            height: 100%;
+        }
+        #detectedStudents {
+            margin-left: 20px;
+            padding: 10px;
+            background-color: #f0f0f0;
+            width: 200px;
+            height: 480px;
+            overflow-y: auto;
+        }
+        #stopButton {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div id="videoContainer">
+    <video id="video" autoplay playsinline></video>
+</div>
+
+<div id="detectedStudents">
+    <h2>Detected Students</h2>
+    <ul id="studentList"></ul>
+    <button id="stopButton" onclick="stopAttendance()">Submit</button>
+</div>
+
+<script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const date = urlParams.get('date');
+    const subject = urlParams.get('subject');
+
+    const video = document.getElementById('video');
+    const studentList = document.getElementById('studentList');
+    let detectedStudents = new Set();
+    let intervalId;
+
+    // Start camera
+    function startCamera() {
+        navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user', width: 640, height: 480 } })
+            .then(stream => {
+                video.srcObject = stream;
+            })
+            .catch(err => {
+                alert("Camera access is required to proceed. Please grant permission.");
+                console.log("An error occurred: " + err);
+            });
+    }
+
+    // Send video frames and process attendance
+    function sendFrame() {
+        const frameCanvas = document.createElement('canvas');
+        frameCanvas.width = video.videoWidth;
+        frameCanvas.height = video.videoHeight;
+        const frameContext = frameCanvas.getContext('2d');
+        frameContext.drawImage(video, 0, 0, frameCanvas.width, frameCanvas.height);
+
+        // Encode the image in base64
+        const imageData = frameCanvas.toDataURL('image/jpeg');
+
+        fetch('/process_video', {
+            method: 'POST',
+            body: JSON.stringify({ image: imageData, date: date, subject: subject }),
+            headers: { 'Content-Type': 'application/json' }
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Clear existing students in the list
+            studentList.innerHTML = "";
+
+            // Add new detected students
+            data.faces.forEach(face => {
+                const studentId = face.student_id;
+                if (!detectedStudents.has(studentId)) {
+                    detectedStudents.add(studentId);
+                }
+            });
+
+            detectedStudents.forEach(id => {
+                const listItem = document.createElement('li');
+                listItem.textContent = id;
+                studentList.appendChild(listItem);
+            });
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    }
+
+    // Stop attendance and clear detected students
+    function stopAttendance() {
+         clearInterval(intervalId);
+
+        const studentArray = Array.from(detectedStudents);
+
+        // Send the list of detected students along with date and subject
+        fetch('/stop_attendance', {
+            method: 'POST',
+            body: JSON.stringify({ student_ids: studentArray, date: date, subject: subject }),
+            headers: { 'Content-Type': 'application/json' }
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log(data.message);
+            alert(data.message);
+            window.location.href = '/';
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert("An error occurred while updating attendance.");
+        });
+
+        detectedStudents.clear();
+    }
+
+    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+        startCamera();
+        intervalId = setInterval(sendFrame, 1000);  // Send frames every second
+    } else {
+        alert("Your browser does not support camera access.");
+    }
+</script>
+
+</body>
+</html>

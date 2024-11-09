@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Start Attendance</title>
+</head>
+<body>
+
+<h1>Attendance Form</h1>
+<label for="date">Date:</label>
+<input type="date" id="date" required>
+<br><br>
+<label for="subject">Subject:</label>
+<select id="subject" name="subject" required>
+            <option value="">Select Subject</option>
+            <option value="sub1">Math</option>
+            <option value="sub2">Science</option>
+            <option value="sub3">English</option>
+        </select><br><br>
+<br><br>
+<button onclick="takeAttendance()">Take Attendance</button>
+
+<script>
+    function takeAttendance() {
+    const date = document.getElementById('date').value;
+    const subject = document.getElementById('subject').value;
+    window.location.href = `/attendance_capture?date=${encodeURIComponent(date)}&subject=${encodeURIComponent(subject)}`;
+}
+</script>
+
+</body>
+</html>

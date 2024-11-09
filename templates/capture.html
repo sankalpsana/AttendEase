@@ -1,10 +1,5 @@
 {% extends "base.html" %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-</head>
+
 
 {% block body %}
 
@@ -28,7 +23,7 @@
 <script>
     // Access the webcam
     var video = document.getElementById('video');
-    document.write("hrllo");
+    document.write("hello");
     navigator.mediaDevices.getUserMedia({ video: true })
         .then(function(stream) {
 
@@ -71,11 +66,9 @@
         .then(data => {
             console.log("Response from server:", data);
             alert(data.message);
+            window.location.href = '/';
         })
         .catch(error => console.log("Error:", error));
     });
 </script>
 {% endblock %}
-
-
-</html>
