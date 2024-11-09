@@ -74,3 +74,4 @@ def delete_face_encoding(studentId):
 
     print(f"Face encoding for Student ID {studentId} deleted successfully.")
 
+#delete_face_encoding('2002')

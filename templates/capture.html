@@ -1,54 +1,92 @@
 {% extends "base.html" %}
 
-
 {% block body %}
+<!-- Container to hold the video stream and button -->
+<div class="container text-center mt-5">
+    <!-- Video stream for webcam -->
+    <video id="video" class="mb-3" width="640" height="480" autoplay></video>
+    <br>
+    <!-- Button to take a snapshot -->
+    <button id="snap" class="btn btn-primary mb-3">Snap Photo</button>
+</div>
 
-<!-- Input for Student ID -->
-<form id="student-form">
-    <label for="student_id">Student ID:</label>
-    <input type="text" id="student_id" name="student_id" required>
-</form>
+<!-- Modal for displaying captured image and student ID input -->
+<div class="modal fade" id="captureModal" tabindex="-1" aria-labelledby="captureModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 90vw;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="captureModalLabel">Captured Photo</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- Display the captured image in the modal -->
+                <img id="capturedImage" class="img-fluid mb-3" style="max-width: 100%; height: auto;" />
+                <br>
+                <!-- Input for Student ID -->
+                <form id="student-form">
+                    <div class="form-group">
+                        <label for="student_id">Student ID:</label>
+                        <input type="text" id="student_id" name="student_id" class="form-control" required>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <!-- Submit button inside modal -->
+                <button type="button" class="btn btn-primary" id="submit">Submit Photo and ID</button>
+            </div>
+        </div>
+    </div>
+</div>
 
-<!-- Video stream for webcam -->
-<video id="video" width="640" height="480" autoplay> </video>
-<button id="snap">Snap Photo</button>
-
-<!-- Display captured photo -->
-<canvas id="canvas" width="640" height="480"></canvas>
-<br>
-<button id="submit">Submit Photo and ID</button>
-
-
-
+<!-- Script to handle webcam, capture photo, and submit data -->
 <script>
     // Access the webcam
     var video = document.getElementById('video');
-    document.write("hello");
     navigator.mediaDevices.getUserMedia({ video: true })
         .then(function(stream) {
-
             video.srcObject = stream;
         })
         .catch(function(err) {
             console.log("An error occurred: " + err);
         });
 
-    // Capture the photo
-    var canvas = document.getElementById('canvas');
-    var context = canvas.getContext('2d');
+    // Capture the photo when Snap button is clicked
+    var capturedImage = document.getElementById('capturedImage');
     document.getElementById("snap").addEventListener("click", function() {
-        context.drawImage(video, 0, 0, 640, 480);
+        // Create a canvas to capture the image from video
+        var canvas = document.createElement('canvas');
+        var context = canvas.getContext('2d');
+        var videoWidth = video.videoWidth;
+        var videoHeight = video.videoHeight;
+
+        // Set the canvas size to match the video size
+        canvas.width = videoWidth;
+        canvas.height = videoHeight;
+
+        // Draw the video frame to the canvas
+        context.drawImage(video, 0, 0, videoWidth, videoHeight);
+
+        // Get the captured image data
+        var imageData = canvas.toDataURL('image/jpeg');
+
+        // Set the image source in the modal
+        capturedImage.src = imageData;
+
+        // Show the modal after taking the snapshot
+        $('#captureModal').modal('show');
     });
 
-    // Send photo and student ID to the server
+    // Submit the captured photo and student ID to the server
     document.getElementById("submit").addEventListener("click", function() {
-        // Get the student ID from the form
+        // Get the student ID from the input
         var studentId = document.getElementById("student_id").value;
 
-        // Get the image data from the canvas
-        var imageData = canvas.toDataURL("image/jpeg");
+        // Get the image data from the img element
+        var imageData = capturedImage.src;
 
-        // Prepare the data to send
+        // Prepare the data to send to the server
         var data = {
             student_id: studentId,
             image: imageData
@@ -66,9 +104,18 @@
         .then(data => {
             console.log("Response from server:", data);
             alert(data.message);
+            // Close the modal and redirect to home
+            $('#captureModal').modal('hide');
             window.location.href = '/';
         })
         .catch(error => console.log("Error:", error));
     });
 </script>
+
+<!-- Include Bootstrap JS and dependencies -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
 {% endblock %}
+</html>

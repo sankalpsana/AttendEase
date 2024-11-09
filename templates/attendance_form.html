@@ -1,26 +1,33 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Start Attendance</title>
-</head>
-<body>
+{% extends "base.html" %}
 
-<h1>Attendance Form</h1>
-<label for="date">Date:</label>
-<input type="date" id="date" required>
-<br><br>
-<label for="subject">Subject:</label>
-<select id="subject" name="subject" required>
-            <option value="">Select Subject</option>
-            <option value="sub1">Math</option>
-            <option value="sub2">Science</option>
-            <option value="sub3">English</option>
-        </select><br><br>
-<br><br>
-<button onclick="takeAttendance()">Take Attendance</button>
+{% block title %}Start Attendance{% endblock %}
 
+{% block body %}
+
+<div class="container centered-form">
+    <div class="col-md-6 col-lg-4">
+        <form>
+            <div class="form-group">
+                <label for="date">Date</label>
+                <input type="date" class="form-control" id="date" name="date" required>
+            </div>
+            <div class="form-group">
+                <label for="subject">Select Option</label>
+                <select class="form-control" id="subject" name="subject" required>
+                    <option value="">Choose...</option>
+                    <option value="sub1">Subject 1</option>
+                    <option value="sub2">Subject 2</option>
+                    <option value="sub3">Subject 3</option>
+                </select>
+            </div>
+            <button type="button" onclick="takeAttendance()" class="btn btn-primary btn-block">Take Attendance</button>
+        </form>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <script>
     function takeAttendance() {
     const date = document.getElementById('date').value;
@@ -29,5 +36,5 @@
 }
 </script>
 
-</body>
+{% endblock %}
 </html>

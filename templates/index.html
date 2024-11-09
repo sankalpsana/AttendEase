@@ -1,7 +1,8 @@
 {% extends "base.html" %}
 
+{% block title %}Attendance System{% endblock %}
+
 {% block head %}
-    <title>Attendance System</title>
     <script>
         function setFormAction(action) {
             // Set the form's action based on the button clicked
@@ -10,14 +11,18 @@
     </script>
 {% endblock %}
 
-{% block body %}
+{% block content %}
 
-<h1>Welcome to the Attendance System</h1>
+<div class="centered-form">
+    <div class="text-center">
+        <h1 class="mb-4">Welcome to the Attendance System</h1>
 
-    <!-- Single form for both actions -->
-    <form id="actionForm" method="get">
-        <button type="submit" onclick="setFormAction('/attendance_form')">Take Attendance</button>
-        <button type="submit" onclick="setFormAction('/capture')">Add Student</button>
-    </form>
+        <!-- Single form for both actions -->
+        <form id="actionForm" method="get">
+            <button type="submit" onclick="setFormAction('/attendance_form')" class="btn btn-primary btn-lg mb-2">Take Attendance</button>
+            <button type="submit" onclick="setFormAction('/capture')" class="btn btn-secondary btn-lg">Add Student</button>
+        </form>
+    </div>
+</div>
 
 {% endblock %}

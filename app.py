@@ -1,60 +1,20 @@
 import base64
 import os
 import pickle
-from asyncio import wait_for
+from datetime import time
 import numpy as np
 from io import BytesIO
 from PIL import Image
-from flask import Flask, render_template, Response, request,redirect,url_for,jsonify
+from flask import Flask, render_template,  request, jsonify
 import cv2
 import face_recognition
-from Face_rec import recProcess
 from EncodeGenerator import add_face_encoding
-from attendanceTool import add_student_to_all_sheets, mark_attendance
+from attendanceTool import  mark_attendance
+from pyngrok import ngrok
 
 face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
 
 app = Flask(__name__)
-'''
-camera = cv2.VideoCapture(0)
-
-def generate_frames():
-    while True:
-        success, frame = camera.read()
-        imgS = cv2.resize(frame, (0, 0), None, 0.25, 0.25)
-        imgS = cv2.cvtColor(imgS, cv2.COLOR_BGR2RGB)
-
-        if not success:
-            break
-        else:
-
-            face_locations = face_recognition.face_locations(imgS)
-
-            for (top, right, bottom, left) in face_locations:
-                top *= 4
-                right *= 4
-                bottom *= 4
-                left *= 4
-
-                cv2.rectangle(frame, (left, top), (right, bottom), (0, 255, 0), 2)
-
-
-
-
-            ret, buffer = cv2.imencode('.jpg', frame)
-            frame = buffer.tobytes()
-        yield(b'--frame\r\n'b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
-'''
-
-try:
-    with open('EncodeFile.p', 'rb') as file:
-        known_encodings_with_ids = pickle.load(file)
-    known_encodings = known_encodings_with_ids[0]
-    student_ids = known_encodings_with_ids[1]
-    print(student_ids)
-except FileNotFoundError:
-    known_encodings = []
-    student_ids = []
 
 @app.route('/')
 def index():
@@ -64,9 +24,6 @@ def index():
 def capture():
     return render_template('capture.html')
 
-'''@app.route('/video')
-def video():
-    return Response(generate_frames(),mimetype='multipart/x-mixed-replace; boundary=frame')'''
 
 @app.route('/attendance_form')
 def attendance_form():
@@ -78,6 +35,15 @@ def attendance_capture():
 
 @app.route('/process_video', methods=['POST'])
 def process_video():
+    try:
+        with open('EncodeFile.p', 'rb') as file:
+            known_encodings_with_ids = pickle.load(file)
+        known_encodings = known_encodings_with_ids[0]
+        student_ids = known_encodings_with_ids[1]
+        print(student_ids)
+    except FileNotFoundError:
+        known_encodings = []
+        student_ids = []
     data = request.get_json()
 
     # Extract image data from the JSON payload
@@ -141,7 +107,7 @@ def stop_attendance():
 def upload_file():
     data = request.get_json()
     image_data = data['image']
-    student_id = data['student_id']
+    studentid = data['student_id']
 
     # Decode the Base64 image
     image_data = image_data.split(",")[1]
@@ -152,7 +118,7 @@ def upload_file():
     image = np.array(image)
     image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
 
-    image_filename = f"{student_id}.jpg"
+    image_filename = f"{studentid}.jpg"
 
     # Save the file
     cv2.imwrite(image_filename, image)
@@ -174,27 +140,22 @@ def upload_file():
         face_image = image[y:y + h, x:x + w]
 
         # Save the cropped face image
-        crop_file_name = f"{student_id}.jpg"
+        crop_file_name = f"{studentid}.jpg"
 
         # Path where you want to save the cropped image
         cropped_image_path = os.path.join('Faces', crop_file_name)
         cv2.imwrite(cropped_image_path, face_image)
         os.remove(image_filename)
 
-        add_face_encoding(cropped_image_path,student_id)
+        add_face_encoding(cropped_image_path,studentid)
 
         print("Image uploaded successfully!")
 
         # Redirect to the index page
-        return jsonify({"status": "success", "message": f"Photo for student {student_id} saved!"})
-
-'''
-@app.route('/video_feed/<date>/<subject>')
-def video_feed(date, subject):
-    return Response(recProcess(date, subject), mimetype='multipart/x-mixed-replace; boundary=frame')
-'''
+        return jsonify({"status": "success", "message": f"Photo for student {studentid} saved!"})
 
 
-
-if __name__ == '__main__':
-    app.run(debug=True, port=5000, host='0.0.0.0')
+'''if __name__ == "__main__":'''
+public_url = ngrok.connect(name='flask').public_url
+print(" * ngrok URL: " + public_url + " *")
+app.run()
