@@ -156,6 +156,9 @@ def upload_file():
 
 
 '''if __name__ == "__main__":'''
-public_url = ngrok.connect(name='flask').public_url
+'''public_url = ngrok.connect(name='flask').public_url
 print(" * ngrok URL: " + public_url + " *")
-app.run()
+app.run()'''
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port)
