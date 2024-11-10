@@ -10,10 +10,11 @@ import cv2
 import face_recognition
 from EncodeGenerator import add_face_encoding
 from attendanceTool import  mark_attendance
+from dotenv import load_dotenv
 from pyngrok import ngrok
 
 face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
-
+load_dotenv()
 app = Flask(__name__)
 
 @app.route('/')
