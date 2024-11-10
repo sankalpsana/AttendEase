@@ -16,6 +16,8 @@ from pyngrok import ngrok
 face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
 load_dotenv()
 app = Flask(__name__)
+UPLOAD_FOLDER = '/tmp/faces'
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 @app.route('/')
 def index():
@@ -106,7 +108,7 @@ def stop_attendance():
 
 @app.route('/upload', methods=['POST'])
 def upload_file():
-    data = request.get_json()
+    '''data = request.get_json()
     image_data = data['image']
     studentid = data['student_id']
 
@@ -153,13 +155,77 @@ def upload_file():
         print("Image uploaded successfully!")
 
         # Redirect to the index page
-        return jsonify({"status": "success", "message": f"Photo for student {studentid} saved!"})
+        return jsonify({"status": "success", "message": f"Photo for student {studentid} saved!"})'''
+    # Get the JSON data from the request
+    try:
+        # Get the JSON data from the request
+        data = request.get_json()
+        image_data = data['image']
+        studentid = data['student_id']
+
+        # Decode the Base64 image
+        image_data = image_data.split(",")[1]
+        image_decoded = base64.b64decode(image_data)
+
+        # Convert the decoded image to an OpenCV image
+        image = Image.open(BytesIO(image_decoded))
+        image = np.array(image)
+        image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
+
+        image_filename = f"{studentid}.jpg"
+
+        # Save the file to the temporary upload directory
+        image_path = os.path.join(UPLOAD_FOLDER, image_filename)
+        cv2.imwrite(image_path, image)
+
+        # Process Image (Detect Faces)
+        image = cv2.imread(image_path)
+
+        # Convert the image to grayscale (Haar Cascade works better on grayscale images)
+        gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+
+        # Detect faces in the image
+        faces = face_cascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30))
+
+        # If a face is detected
+        if len(faces) > 0:
+            # Get the coordinates of the first detected face (x, y, w, h)
+            x, y, w, h = faces[0]
+
+            # Crop the image to include only the face
+            face_image = image[y:y + h, x:x + w]
+
+            # Save the cropped face image to the same temporary directory
+            crop_file_name = f"{studentid}_face.jpg"
+            cropped_image_path = os.path.join(UPLOAD_FOLDER, crop_file_name)
+            cv2.imwrite(cropped_image_path, face_image)
+
+            # Optionally, delete the original image if it's not needed
+            os.remove(image_path)
+
+            # Call your encoding function (you can modify it as needed)
+            add_face_encoding(cropped_image_path, studentid)
+
+            # Delete the cropped image after processing
+            os.remove(cropped_image_path)
+
+            print("Image uploaded and processed successfully!")
+
+            # Respond with success
+            return jsonify({"status": "success", "message": f"Photo for student {studentid} saved!"})
+
+        else:
+            return jsonify({"status": "error", "message": "No face detected in the image!"}), 400
+
+    except Exception as e:
+        print(f"Error: {e}")
+        return jsonify({"status": "error", "message": "An error occurred while processing the image!"}), 500
 
 
 '''if __name__ == "__main__":'''
-'''public_url = ngrok.connect(name='flask').public_url
+public_url = ngrok.connect(name='flask').public_url
 print(" * ngrok URL: " + public_url + " *")
-app.run()'''
-if __name__ == "__main__":
+app.run()
+'''if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
-    app.run(host="0.0.0.0", port=port)
+    app.run(host="0.0.0.0", port=port)'''
